@@ -77,7 +77,7 @@ class AlgorithmService(private val input: Input = Input()) {
             }
         }
 
-        println("Топология симметрична, начинаю расчет.")
+        println("Топология симметрична, начинаю расчет.\n")
     }
 
     /**
@@ -93,6 +93,8 @@ class AlgorithmService(private val input: Input = Input()) {
 
         Individual.Chromosome.firstGen = input.`$firstPoint`
         Individual.Chromosome.lastGen = input.`$lastPoint`
+
+        Topology.pointsCount = input.`$pointsCount`
     }
 
     /**
@@ -106,10 +108,65 @@ class AlgorithmService(private val input: Input = Input()) {
      * Вынес все аналитические необходимости в отдельный метод
      */
     private fun startAnalysis() {
+        this.fitness()
+
+        this.increaseStep()
+
+        this.sortByFitness()
+    }
+
+    /**
+     * Вычисляем пути для всех особей в популяции
+     */
+    private fun fitness() {
+        for (individual in Population.population) {
+            individual.fitness()
+        }
+    }
+
+    /**
+     * Увеличим шаг
+     */
+    private fun increaseStep() = Population.step++
+
+    private fun sortByFitness() {
         this.sort()
+
+        this.setCrossoverChance()
+
+        this.printPopulation()
     }
 
     private fun sort() {
         Population.population.sortWith(Population.FitnessComparator)
+    }
+
+    private fun setCrossoverChance() {
+        val point = 100 / Population.populationCount
+
+        var individualNumber = 1
+
+        for (individual in Population.population) {
+            individual.crossoverChance = ((100.00 - point * individualNumber).toFloat())
+            individualNumber++
+        }
+    }
+
+    /**
+     * Вывести популяцию в консоль
+     */
+    private fun printPopulation() {
+        var individualNumber = 1
+
+        for (ind in Population.population) {
+            System.out.printf("Особь %d: ", individualNumber)
+            for (gen in ind.getChromosome().genome) {
+                print("${gen.graphPoint} ")
+            }
+
+            System.out.printf("Путь: %d ", ind.fitness)
+            System.out.printf("Шанс ск.: %f\n", ind.crossoverChance)
+            individualNumber++
+        }
     }
 }

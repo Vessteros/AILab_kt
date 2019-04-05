@@ -1,7 +1,5 @@
 package app.entities
 
-import app.helpers.setZero
-
 class Individual(private val chromosome: Individual.Chromosome = Chromosome()) {
 
     /**
@@ -15,16 +13,17 @@ class Individual(private val chromosome: Individual.Chromosome = Chromosome()) {
     var fitness: Int = 10000
 
     fun getChromosome(): Individual.Chromosome {
-        return this.chromosome
+        return chromosome
     }
 
     fun fitness() {
-        this.fitness.setZero()
+        fitness = 0
+
         val topology = Topology.topology
-        val genome = this.chromosome.genome
+        val genome = chromosome.genome
 
         for (i in 0 until genome.size - 1) {
-            this.fitness += topology[genome.get(index = i).graphPoint][genome.get(index = i + 1).graphPoint]
+            fitness += topology[genome.get(index = i).graphPoint][genome.get(index = i + 1).graphPoint]
         }
     }
 
@@ -102,7 +101,7 @@ class Individual(private val chromosome: Individual.Chromosome = Chromosome()) {
              * Тонкое место, если создавать модели до инпута, то тут всегда будет 0
              */
             constructor() {
-                this.graphPoint = (Math.random() * Chromosome.lastGen).toInt()
+                this.graphPoint = (Math.random() * Topology.pointsCount).toInt()
             }
 
             /**

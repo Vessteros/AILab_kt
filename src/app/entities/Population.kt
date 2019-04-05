@@ -10,6 +10,8 @@ object Population {
     var populationCount: Int = 0
     var generationCount: Int = 0
 
+    var step: Int = 1
+
     /**
      * Не спрашивай, я не знаю, просто ладно
      */
