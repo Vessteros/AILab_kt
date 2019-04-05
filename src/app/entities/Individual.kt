@@ -28,15 +28,6 @@ class Individual(private val chromosome: Individual.Chromosome = Chromosome()) {
         }
     }
 
-    companion object {
-        var FitnessComparator = { individual1: Individual, individual2: Individual ->
-            val fitness1 = individual1.fitness
-            val fitness2 = individual2.fitness
-
-            fitness1 - fitness2
-        }
-    }
-
 
     class Chromosome {
         /**

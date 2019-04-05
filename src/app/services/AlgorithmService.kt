@@ -106,6 +106,10 @@ class AlgorithmService(private val input: Input = Input()) {
      * Вынес все аналитические необходимости в отдельный метод
      */
     private fun startAnalysis() {
+        this.sort()
+    }
 
+    private fun sort() {
+        Population.population.sortWith(Population.FitnessComparator)
     }
 }
