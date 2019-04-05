@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Scanner;
 
-public class Input implements InputInterface{
+public class Input{
 
     private Scanner $input;
 
@@ -29,8 +29,8 @@ public class Input implements InputInterface{
     }
 
     @NotNull
-    public Input getNecessaryInfo(){
-        try {
+    public Input getNecessaryInfo() throws Exception{
+
             this
                 .getGenerations()
                 .getPopulation()
@@ -39,16 +39,13 @@ public class Input implements InputInterface{
                 .getCrossoverType()
                 .getTopology()
                 .getPoints();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
 
         return this;
     }
 
     @NotNull
     @Contract(" -> this")
-    public Input setScanner() {
+    Input setScanner() {
         this.$input = new Scanner(System.in);
 
         return this;
