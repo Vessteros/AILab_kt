@@ -1,5 +1,6 @@
 package app.helpers;
 
+import app.entities.CrossoverModel;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,7 +13,7 @@ public class Input{
     public int $generations;
     public int $population;
     public int $genomeLength;
-    public float $mutationChance;
+    public int $mutationChance;
     public int $crossoverType;
     public int $pointsCount;
 
@@ -83,18 +84,23 @@ public class Input{
 
     @Contract(" -> this")
     private Input getMutationChance() {
-        System.out.println("Введите шанс мутации (float запятая): ");
-        this.$mutationChance = $input.nextFloat();
+        System.out.println("Введите шанс мутации (0 .. 100%): ");
+        this.$mutationChance = $input.nextInt();
         System.out.println("Шанс мутации установлен.\n");
 
         return this;
     }
 
     @Contract(" -> this")
-    private Input getCrossoverType() {
+    private Input getCrossoverType() throws Exception {
         System.out.println("Выберите тип кроссинговера: ");
         this.$crossoverType = $input.nextInt();
-        System.out.println("Тип кроссовера установлен.\n");
+
+        if (!CrossoverModel.valueOf("Type" + $crossoverType).checkCrossoverExists()) {
+            throw new Exception("Этот типа пока не доступен для использования: " + CrossoverModel.valueOf("Type" + $crossoverType));
+        }
+
+        System.out.println("Тип кроссовера установлен: " + CrossoverModel.valueOf("Type" + $crossoverType) + "\n");
 
         return this;
     }
@@ -118,6 +124,7 @@ public class Input{
         for (int $i = 0; $i < this.$pointsCount; $i++) {
 
             System.out.printf("Введите %d строку значений (слитно через /): ", $i+1);
+
             String $valueRow = $newScanner.nextLine();
 
             String[] $valueList = $valueRow.split("/");

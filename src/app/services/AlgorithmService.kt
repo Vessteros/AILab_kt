@@ -1,5 +1,6 @@
 package app.services
 
+import app.entities.CrossoverModel
 import app.entities.Individual
 import app.entities.Population
 import app.entities.Topology
@@ -18,7 +19,7 @@ class AlgorithmService(private val input: Input = Input()) {
             start()
         } catch (e: Exception) {
             println(e.message)
-            print("Заканчиваю работу.")
+            print("Заканчиваю работу.\n")
         }
 
     }
@@ -37,12 +38,17 @@ class AlgorithmService(private val input: Input = Input()) {
 
         this.spawnFirstGeneration()
 
+        this.setCrossover()
+
         this.startAnalysis()
+
+        this.startSelection()
     }
 
     /**
      * Получение всей необходимой информации
      */
+    @Throws(Exception::class)
     private fun getNecessaryInfo() {
         input.getNecessaryInfo()
     }
@@ -72,7 +78,7 @@ class AlgorithmService(private val input: Input = Input()) {
         for (i in 0 until topology.pointsCount) {
             for (j in 0 until topology.pointsCount) {
                 if (topology.topology[i][j] != topology.topology[j][i]) {
-                    throw Exception("Топология не симметрична, проверьте введенные данные. Завершаю работу.")
+                    throw Exception("Топология не симметрична, проверьте введенные данные.")
                 }
             }
         }
@@ -84,15 +90,19 @@ class AlgorithmService(private val input: Input = Input()) {
      * Проставим все необходимые значения с консоли
      */
     private fun setStaticFields() {
-        Population.populationCount = input.`$population`
-        Population.generationCount = input.`$generations`
+        Population.apply {
+            populationCount = input.`$population`
+            generationCount = input.`$generations`
+        }
 
-        Individual.Chromosome.crossoverType = input.`$crossoverType`
-        Individual.Chromosome.genomeLength = input.`$genomeLength`
-        Individual.Chromosome.mutationChance = input.`$mutationChance`
+        Individual.Chromosome.apply {
+            crossoverType = input.`$crossoverType`
+            genomeLength = input.`$genomeLength`
+            mutationChance = input.`$mutationChance`
 
-        Individual.Chromosome.firstGen = input.`$firstPoint`
-        Individual.Chromosome.lastGen = input.`$lastPoint`
+            firstGen = input.`$firstPoint`
+            lastGen = input.`$lastPoint`
+        }
 
         Topology.pointsCount = input.`$pointsCount`
     }
@@ -102,6 +112,10 @@ class AlgorithmService(private val input: Input = Input()) {
      */
     private fun spawnFirstGeneration() {
         Population.spawnFirstGeneration()
+    }
+
+    private fun setCrossover() {
+        Population.crossover = CrossoverModel.valueOf("Type" + Individual.Chromosome.crossoverType)
     }
 
     /**
@@ -119,8 +133,8 @@ class AlgorithmService(private val input: Input = Input()) {
      * Вычисляем пути для всех особей в популяции
      */
     private fun fitness() {
-        for (individual in Population.population) {
-            individual.fitness()
+        Population.population.forEach {
+            it.fitness()
         }
     }
 
@@ -137,36 +151,37 @@ class AlgorithmService(private val input: Input = Input()) {
         this.printPopulation()
     }
 
+    /**
+     * Сортировка
+     */
     private fun sort() {
         Population.population.sortWith(Population.FitnessComparator)
     }
 
+    /**
+     * Чем лучше результат особи, тем большее ее шанс скрещивания
+     */
     private fun setCrossoverChance() {
-        val point = 100 / Population.populationCount
-
-        var individualNumber = 1
-
-        for (individual in Population.population) {
-            individual.crossoverChance = ((100.00 - point * individualNumber).toFloat())
-            individualNumber++
-        }
+        Population.setCrossoverChance()
     }
 
     /**
      * Вывести популяцию в консоль
      */
     private fun printPopulation() {
-        var individualNumber = 1
+        Population.printPopulation()
+    }
 
-        for (ind in Population.population) {
-            System.out.printf("Особь %d: ", individualNumber)
-            for (gen in ind.getChromosome().genome) {
-                print("${gen.graphPoint} ")
-            }
+    private fun startSelection() {
+        for (i in 0 until Population.generationCount - 1) {
+            Population.crossover()
 
-            System.out.printf("Путь: %d ", ind.fitness)
-            System.out.printf("Шанс ск.: %f\n", ind.crossoverChance)
-            individualNumber++
+            this.increaseStep()
+
+            println("Шаг ${Population.step}")
+            Population.printPopulation()
         }
+
+        println("Кратчайший путь посе работы программы на ${Population.generationCount} колненах: ${Population.population[0].fitness}")
     }
 }

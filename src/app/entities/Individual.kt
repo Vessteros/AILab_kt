@@ -28,7 +28,7 @@ class Individual(private val chromosome: Individual.Chromosome = Chromosome()) {
     }
 
 
-    class Chromosome {
+    class Chromosome(isEmpty: Boolean = false) {
         /**
          * Компаньен - синглтон, в котлине это замена статике.
          * Логично, в принципе, создаешь синглтон, и по названию класса синглтона вызываешь его поля,
@@ -37,7 +37,7 @@ class Individual(private val chromosome: Individual.Chromosome = Chromosome()) {
         companion object {
             var genomeLength: Int = 10
             var crossoverType: Int = 1
-            var mutationChance: Float = 0.1f
+            var mutationChance: Int = 0
 
             var firstGen: Int = 0
             var lastGen: Int = 5
@@ -48,7 +48,7 @@ class Individual(private val chromosome: Individual.Chromosome = Chromosome()) {
          * Слава богу котлин не мудрил с листами и они полностью перекочевали из java
          * Такая боль
          */
-        var genome: ArrayList<Genome> = ArrayList()
+        var genome: ArrayList<Gen> = ArrayList()
 
         /**
          * Если есть какая-то часть кода, которая должна быть выполнена при создании объекта:
@@ -57,7 +57,19 @@ class Individual(private val chromosome: Individual.Chromosome = Chromosome()) {
          * но иде предлагает добровольно-принудительно запихнуть в init
          */
         init {
-            this.setGenome()
+            setGenome(isEmpty)
+        }
+
+        fun checkMutation() {
+            val strike = (0..100).random()
+
+            if (strike < mutationChance) {
+                mutate()
+            }
+        }
+
+        private fun mutate() {
+            setGenome()
         }
 
         /**
@@ -70,26 +82,30 @@ class Individual(private val chromosome: Individual.Chromosome = Chromosome()) {
          * и должны создаваться отдельно от всей цепочки
          *
          * В цикле, вычитая эти 2 гена, создаем обычные объекты через вторичный конструктор.
-         * В модели гена , кстати, есть перегрузка, поэтому блок init использовать нельзя
+         * В модели гена, кстати, есть перегрузка, поэтому блок init использовать нельзя
          */
-        private fun setGenome() {
-            this.genome.add(Genome.getFirstGen())
+        private fun setGenome(isEmpty: Boolean = false) {
+            genome = ArrayList()
 
-            for (i in 1 until Chromosome.genomeLength - 1) {
-                this.genome.add(Genome())
+            if (!isEmpty) {
+                genome.add(Gen.getFirstGen())
+
+                for (i in 1 until Chromosome.genomeLength - 1) {
+                    genome.add(Gen())
+                }
+
+                genome.add(Gen.getLastGen())
             }
-
-            this.genome.add(Genome.getLastGen())
         }
 
         /**
          * Внутренний класс генома
          */
-        class Genome {
+        class Gen {
             companion object {
-                fun getFirstGen(): Genome = Genome(Chromosome.firstGen)
+                fun getFirstGen(): Gen = Gen(Chromosome.firstGen)
 
-                fun getLastGen(): Genome = Genome(Chromosome.lastGen)
+                fun getLastGen(): Gen = Gen(Chromosome.lastGen)
             }
 
             /**
