@@ -30,7 +30,7 @@ class Individual(private val chromosome: Individual.Chromosome = Chromosome()) {
 
     class Chromosome(isEmpty: Boolean = false) {
         /**
-         * Компаньен - синглтон, в котлине это замена статике.
+         * Компаньон - синглтон, в котлине это замена статике.
          * Логично, в принципе, создаешь синглтон, и по названию класса синглтона вызываешь его поля,
          * которые везде одинаковы
          */
