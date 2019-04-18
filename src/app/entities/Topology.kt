@@ -7,7 +7,7 @@ object Topology {
     var topology: Array<out IntArray> = Array(0, {IntArray(0, {0})})
 
     /**
-     * Количество вершн топологии
+     * Количество вершин топологии
      */
     var pointsCount: Int = 0
 }
