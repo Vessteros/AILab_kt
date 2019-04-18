@@ -182,6 +182,6 @@ class AlgorithmService(private val input: Input = Input()) {
             Population.printPopulation()
         }
 
-        println("Кратчайший путь посе работы программы на ${Population.generationCount} колненах: ${Population.population[0].fitness}")
+        println("Кратчайший путь посе работы программы на ${Population.generationCount} коленах: ${Population.population[0].fitness}")
     }
 }

@@ -31,8 +31,7 @@ public class Input{
 
     @NotNull
     public Input getNecessaryInfo() throws Exception{
-
-            this
+        return this
                 .getGenerations()
                 .getPopulation()
                 .getGenomeLength()
@@ -40,8 +39,6 @@ public class Input{
                 .getCrossoverType()
                 .getTopology()
                 .getPoints();
-
-        return this;
     }
 
     @NotNull
