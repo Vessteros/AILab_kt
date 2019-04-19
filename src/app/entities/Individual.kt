@@ -1,6 +1,6 @@
 package app.entities
 
-class Individual(private val chromosome: Individual.Chromosome = Chromosome()) {
+class Individual(private val chromosome: Chromosome = Chromosome()) {
 
     /**
      * Шанс скрещивания конкретной особи
@@ -12,7 +12,7 @@ class Individual(private val chromosome: Individual.Chromosome = Chromosome()) {
      */
     var fitness: Int = 10000
 
-    fun getChromosome(): Individual.Chromosome {
+    fun getChromosome(): Chromosome {
         return chromosome
     }
 
@@ -90,7 +90,7 @@ class Individual(private val chromosome: Individual.Chromosome = Chromosome()) {
             if (!isEmpty) {
                 genome.add(Gen.getFirstGen())
 
-                for (i in 1 until Chromosome.genomeLength - 1) {
+                for (i in 1 until genomeLength - 1) {
                     genome.add(Gen())
                 }
 
@@ -103,9 +103,9 @@ class Individual(private val chromosome: Individual.Chromosome = Chromosome()) {
          */
         class Gen {
             companion object {
-                fun getFirstGen(): Gen = Gen(Chromosome.firstGen)
+                fun getFirstGen(): Gen = Gen(firstGen)
 
-                fun getLastGen(): Gen = Gen(Chromosome.lastGen)
+                fun getLastGen(): Gen = Gen(lastGen)
             }
 
             /**

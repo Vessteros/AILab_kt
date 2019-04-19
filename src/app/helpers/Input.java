@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Scanner;
 
-public class Input{
+public class Input implements InputInterface{
 
     private Scanner $input;
 
@@ -43,7 +43,7 @@ public class Input{
 
     @NotNull
     @Contract(" -> this")
-    Input setScanner() {
+    public Input setScanner() {
         this.$input = new Scanner(System.in);
 
         return this;

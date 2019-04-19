@@ -38,8 +38,8 @@ object Population {
         population.forEach {
             System.out.printf("Особь %d: ", individualNumber)
 
-            it.getChromosome().genome.forEach {
-                print("${it.graphPoint} ")
+            it.getChromosome().genome.forEach { gen ->
+                print("${gen.graphPoint} ")
             }
 
             System.out.printf("Путь: %d ", it.fitness)
